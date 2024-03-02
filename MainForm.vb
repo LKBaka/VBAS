@@ -23,7 +23,7 @@ Public Class MainForm
     ByVal wParam As Long, lParam As Int32) As Long
     Public Const HTCAPTION = 2
     Public Const WM_NCLBUTTONDOWN = &HA1
-
+    Public NSudoPath = Application.StartupPath + "NSudoDM.dll"
     Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
     'Public State As Int16 = 0
 
@@ -78,45 +78,32 @@ Public Class MainForm
         Dim s As New Scan
         'If MainForm.State = 0 Then
         Try
-            Dim NSudoPath = Application.StartupPath + "NSudoDM.dll"
+
 
             Dim NSudoDevilModeModuleHandle As IntPtr = LoadLibrary(NSudoPath) ' DLL文件名  
             ' 添加当前目录中的文件到列表中  
             If NSudoDevilModeModuleHandle <> IntPtr.Zero Then
                 For Each file In Directory.GetFiles(directoryPath)
                     Try
-                        Dim i = 0
                         Await Task.Run(Sub()
                                            Dim result As FileHealthResult = FileHealth.CheckAsync(s.getMD5(file)).Result
                                            If result IsNot Nothing Then
                                                If result.IsOperationSuccess Then
-
                                                    Me.Invoke(
                                                         Sub()
                                                             Me.Scan_Tip.Text = "正在扫描:" & file
                                                         End Sub
-)
+                                                    )
 
-
-
-
-
-                                                   Debug.Print("Malware Type : {0}", result.MalwareType)
-                                                   Debug.Print("Probability (0-100) : {0}", result.Level)
 
                                                    If CInt(result.Level) > 50 Then
-
                                                        Try
-
-
                                                            Me.Invoke(
-                                                                    Sub()
-                                                                        Me.ListView1.Items.Add(file)
-                                                                        Me.VirusCount.Text = "威胁数量:" & Me.ListView1.Items.Count
-                                                                        Me.ListView1.Items(i).SubItems.Add(result.MalwareType)
-                                                                        i += 1
-                                                                    End Sub
-                                                                 )
+                                                                Sub()
+                                                                    Me.ListView1.Items.Add(file)
+                                                                    Me.VirusCount.Text = "威胁数量:" & Me.ListView1.Items.Count
+                                                                End Sub
+                                                       )
 
                                                        Catch ex As Exception
 
@@ -170,17 +157,13 @@ Public Class MainForm
 
         Dim NSudoDevilModeModuleHandle As IntPtr = LoadLibrary(NSudoPath) ' DLL文件名  
         Try
-            For iI = 0 To ListView1.Items.Count - 1
-                If iI = 1 Then
-                    IO.File.Delete(ListView1.Items(0).Text)
-                    ListView1.Items.Remove(ListView1.Items(0))
-                    Me.VirusCount.Text = "威胁数量:0"
-                Else
-                    IO.File.Delete(ListView1.Items(iI).Text)
-                    ListView1.Items.Remove(ListView1.Items(iI))
-                    Me.VirusCount.Text = "威胁数量:" & ListView1.Items.Count
-                End If
+            For iI = ListView1.Items.Count - 1 To 0 Step -1
+                IO.File.Delete(ListView1.Items(iI).Text)
+                ListView1.Items.RemoveAt(iI)
             Next
+
+            ' 更新威胁数量  
+            Me.VirusCount.Text = "威胁数量:" & ListView1.Items.Count
         Catch ex As Exception
 
         End Try
@@ -262,20 +245,20 @@ Public Class Scan
         ' If MainForm.State = 0 Then
         Try
 
-                Dim fstream As New FileStream(strSource, FileMode.Open, FileAccess.Read)
-                Dim dataToHash(fstream.Length - 1) As Byte
-                fstream.Read(dataToHash, 0, fstream.Length)
-                fstream.Close()
-                Dim hashvalue As Byte() = CType(CryptoConfig.CreateFromName("MD5"), HashAlgorithm).ComputeHash(dataToHash)
-                Dim i As Integer
-                For i = 0 To hashvalue.Length - 1
-                    r += Microsoft.VisualBasic.Right("00" + Hex(hashvalue(i)).ToLower, 2)
-                Next
-                Return r
-            Catch ex As Exception
+            Dim fstream As New FileStream(strSource, FileMode.Open, FileAccess.Read)
+            Dim dataToHash(fstream.Length - 1) As Byte
+            fstream.Read(dataToHash, 0, fstream.Length)
+            fstream.Close()
+            Dim hashvalue As Byte() = CType(CryptoConfig.CreateFromName("MD5"), HashAlgorithm).ComputeHash(dataToHash)
+            Dim i As Integer
+            For i = 0 To hashvalue.Length - 1
+                r += Microsoft.VisualBasic.Right("00" + Hex(hashvalue(i)).ToLower, 2)
+            Next
+            Return r
+        Catch ex As Exception
 
-                Return r
-            End Try
+            Return r
+        End Try
         ' End If
     End Function
 

@@ -29,7 +29,6 @@ Partial Class MainForm
         PageCtrl = New TabControl()
         MainPgae = New TabPage()
         MainPage_Scan = New TabPage()
-        DotDotdotdot = New Label()
         ScaningPage_Btn = New Label()
         Tip_0 = New Label()
         ScaningPage = New TabPage()
@@ -38,7 +37,6 @@ Partial Class MainForm
         Scan_Tip = New Label()
         ListView1 = New ListView()
         FileName = New ColumnHeader()
-        type = New ColumnHeader()
         CtrlPanel = New Panel()
         ScanMainPage_Btn = New PictureBox()
         MainPage_Btn = New PictureBox()
@@ -108,7 +106,6 @@ Partial Class MainForm
         ' MainPage_Scan
         ' 
         MainPage_Scan.BackColor = Color.LightSkyBlue
-        MainPage_Scan.Controls.Add(DotDotdotdot)
         MainPage_Scan.Controls.Add(ScaningPage_Btn)
         MainPage_Scan.Controls.Add(Tip_0)
         MainPage_Scan.Location = New Point(4, 29)
@@ -117,15 +114,6 @@ Partial Class MainForm
         MainPage_Scan.Size = New Size(932, 629)
         MainPage_Scan.TabIndex = 1
         MainPage_Scan.Text = "查杀_主界面"
-        ' 
-        ' DotDotdotdot
-        ' 
-        DotDotdotdot.AutoSize = True
-        DotDotdotdot.Location = New Point(6, 610)
-        DotDotdotdot.Name = "DotDotdotdot"
-        DotDotdotdot.Size = New Size(364, 20)
-        DotDotdotdot.TabIndex = 3
-        DotDotdotdot.Text = "感谢MIAIONE大佬送出的VB.NET 360杀毒模块一枚~" & vbCrLf
         ' 
         ' ScaningPage_Btn
         ' 
@@ -197,7 +185,7 @@ Partial Class MainForm
         ' ListView1
         ' 
         ListView1.BackColor = Color.LightSkyBlue
-        ListView1.Columns.AddRange(New ColumnHeader() {FileName, type})
+        ListView1.Columns.AddRange(New ColumnHeader() {FileName})
         ListView1.Location = New Point(6, 77)
         ListView1.Name = "ListView1"
         ListView1.Size = New Size(920, 550)
@@ -208,12 +196,7 @@ Partial Class MainForm
         ' FileName
         ' 
         FileName.Text = "文件名"
-        FileName.Width = 400
-        ' 
-        ' type
-        ' 
-        type.Text = "病毒类型"
-        type.Width = 400
+        FileName.Width = 8000
         ' 
         ' CtrlPanel
         ' 
@@ -294,10 +277,8 @@ Partial Class MainForm
     Friend WithEvents Scan_Tip As Label
     Friend WithEvents ListView1 As ListView
     Friend WithEvents FileName As ColumnHeader
-    Friend WithEvents type As ColumnHeader
     Friend WithEvents ScaningPage_Btn As Label
     Friend WithEvents FolderBrowserDialog1 As FolderBrowserDialog
-    Friend WithEvents DotDotdotdot As Label
     Friend WithEvents Del As Label
     Friend WithEvents VirusCount As Label
 End Class
