@@ -22,14 +22,14 @@ Partial Class MainForm
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As ComponentModel.ComponentResourceManager = New ComponentModel.ComponentResourceManager(GetType(MainForm))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Panel_Move = New Panel()
         Btn_MinWindow = New Label()
         Btn_Close = New Label()
         CtrlPanel = New Panel()
+        MainPage_Btn = New Label()
+        ScanMainPage_Btn = New Label()
         Fix = New Label()
-        ScanMainPage_Btn = New PictureBox()
-        MainPage_Btn = New PictureBox()
         Panel_isGoTo = New Panel()
         FolderBrowserDialog1 = New FolderBrowserDialog()
         Panel1 = New Panel()
@@ -37,6 +37,7 @@ Partial Class MainForm
         MainPgae = New TabPage()
         MainPage_Scan = New TabPage()
         ScanPanel = New Panel()
+        NoInternetScan_Btn = New Label()
         SelPathScan_Btn = New Label()
         Show_ScanPanel = New Label()
         ScaningPage_Btn = New Label()
@@ -51,8 +52,6 @@ Partial Class MainForm
         FixTaskMgr = New Label()
         Panel_Move.SuspendLayout()
         CtrlPanel.SuspendLayout()
-        CType(ScanMainPage_Btn, ComponentModel.ISupportInitialize).BeginInit()
-        CType(MainPage_Btn, ComponentModel.ISupportInitialize).BeginInit()
         Panel1.SuspendLayout()
         PageCtrl.SuspendLayout()
         MainPage_Scan.SuspendLayout()
@@ -63,7 +62,7 @@ Partial Class MainForm
         ' 
         ' Panel_Move
         ' 
-        Panel_Move.BackColor = Color.FromArgb(CByte(125), CByte(200), CByte(247))
+        Panel_Move.BackColor = Color.DarkGray
         Panel_Move.Controls.Add(Btn_MinWindow)
         Panel_Move.Controls.Add(Btn_Close)
         Panel_Move.Location = New Point(0, -3)
@@ -93,45 +92,48 @@ Partial Class MainForm
         ' 
         ' CtrlPanel
         ' 
-        CtrlPanel.Controls.Add(Fix)
-        CtrlPanel.Controls.Add(ScanMainPage_Btn)
+        CtrlPanel.BackColor = Color.Silver
         CtrlPanel.Controls.Add(MainPage_Btn)
+        CtrlPanel.Controls.Add(ScanMainPage_Btn)
+        CtrlPanel.Controls.Add(Fix)
         CtrlPanel.Controls.Add(Panel_isGoTo)
         CtrlPanel.Location = New Point(0, 43)
         CtrlPanel.Name = "CtrlPanel"
         CtrlPanel.Size = New Size(133, 674)
         CtrlPanel.TabIndex = 0
         ' 
+        ' MainPage_Btn
+        ' 
+        MainPage_Btn.BackColor = Color.Gainsboro
+        MainPage_Btn.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
+        MainPage_Btn.Location = New Point(23, 35)
+        MainPage_Btn.Name = "MainPage_Btn"
+        MainPage_Btn.Size = New Size(106, 49)
+        MainPage_Btn.TabIndex = 10
+        MainPage_Btn.Text = "主页"
+        MainPage_Btn.TextAlign = ContentAlignment.MiddleCenter
+        ' 
+        ' ScanMainPage_Btn
+        ' 
+        ScanMainPage_Btn.BackColor = Color.Gainsboro
+        ScanMainPage_Btn.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
+        ScanMainPage_Btn.Location = New Point(23, 88)
+        ScanMainPage_Btn.Name = "ScanMainPage_Btn"
+        ScanMainPage_Btn.Size = New Size(106, 49)
+        ScanMainPage_Btn.TabIndex = 9
+        ScanMainPage_Btn.Text = "查杀"
+        ScanMainPage_Btn.TextAlign = ContentAlignment.MiddleCenter
+        ' 
         ' Fix
         ' 
-        Fix.BackColor = Color.Silver
+        Fix.BackColor = Color.Gainsboro
         Fix.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
-        Fix.Location = New Point(23, 148)
+        Fix.Location = New Point(23, 142)
         Fix.Name = "Fix"
         Fix.Size = New Size(106, 49)
         Fix.TabIndex = 8
         Fix.Text = "修复"
         Fix.TextAlign = ContentAlignment.MiddleCenter
-        ' 
-        ' ScanMainPage_Btn
-        ' 
-        ScanMainPage_Btn.Image = My.Resources.Resources.ScanPage
-        ScanMainPage_Btn.Location = New Point(24, 91)
-        ScanMainPage_Btn.Name = "ScanMainPage_Btn"
-        ScanMainPage_Btn.Size = New Size(106, 50)
-        ScanMainPage_Btn.SizeMode = PictureBoxSizeMode.StretchImage
-        ScanMainPage_Btn.TabIndex = 7
-        ScanMainPage_Btn.TabStop = False
-        ' 
-        ' MainPage_Btn
-        ' 
-        MainPage_Btn.Image = My.Resources.Resources.MainPage_Btn
-        MainPage_Btn.Location = New Point(23, 35)
-        MainPage_Btn.Name = "MainPage_Btn"
-        MainPage_Btn.Size = New Size(106, 50)
-        MainPage_Btn.SizeMode = PictureBoxSizeMode.StretchImage
-        MainPage_Btn.TabIndex = 6
-        MainPage_Btn.TabStop = False
         ' 
         ' Panel_isGoTo
         ' 
@@ -164,7 +166,7 @@ Partial Class MainForm
         ' 
         ' MainPgae
         ' 
-        MainPgae.BackColor = Color.LightSkyBlue
+        MainPgae.BackColor = Color.Silver
         MainPgae.Location = New Point(4, 29)
         MainPgae.Name = "MainPgae"
         MainPgae.Padding = New Padding(3)
@@ -174,7 +176,7 @@ Partial Class MainForm
         ' 
         ' MainPage_Scan
         ' 
-        MainPage_Scan.BackColor = Color.LightSkyBlue
+        MainPage_Scan.BackColor = Color.Silver
         MainPage_Scan.Controls.Add(ScanPanel)
         MainPage_Scan.Controls.Add(Show_ScanPanel)
         MainPage_Scan.Controls.Add(ScaningPage_Btn)
@@ -188,6 +190,7 @@ Partial Class MainForm
         ' 
         ' ScanPanel
         ' 
+        ScanPanel.Controls.Add(NoInternetScan_Btn)
         ScanPanel.Controls.Add(SelPathScan_Btn)
         ScanPanel.Location = New Point(144, 386)
         ScanPanel.Name = "ScanPanel"
@@ -195,9 +198,20 @@ Partial Class MainForm
         ScanPanel.TabIndex = 4
         ScanPanel.Visible = False
         ' 
+        ' NoInternetScan_Btn
+        ' 
+        NoInternetScan_Btn.BackColor = Color.Gainsboro
+        NoInternetScan_Btn.Font = New Font("黑体", 18F, FontStyle.Regular, GraphicsUnit.Point)
+        NoInternetScan_Btn.Location = New Point(0, 67)
+        NoInternetScan_Btn.Name = "NoInternetScan_Btn"
+        NoInternetScan_Btn.Size = New Size(199, 63)
+        NoInternetScan_Btn.TabIndex = 4
+        NoInternetScan_Btn.Text = "离线查杀"
+        NoInternetScan_Btn.TextAlign = ContentAlignment.MiddleCenter
+        ' 
         ' SelPathScan_Btn
         ' 
-        SelPathScan_Btn.BackColor = Color.Silver
+        SelPathScan_Btn.BackColor = Color.Gainsboro
         SelPathScan_Btn.Font = New Font("黑体", 18F, FontStyle.Regular, GraphicsUnit.Point)
         SelPathScan_Btn.Location = New Point(-3, 0)
         SelPathScan_Btn.Name = "SelPathScan_Btn"
@@ -208,7 +222,7 @@ Partial Class MainForm
         ' 
         ' Show_ScanPanel
         ' 
-        Show_ScanPanel.BackColor = Color.Silver
+        Show_ScanPanel.BackColor = Color.Gainsboro
         Show_ScanPanel.Font = New Font("黑体", 24F, FontStyle.Regular, GraphicsUnit.Point)
         Show_ScanPanel.Location = New Point(343, 316)
         Show_ScanPanel.Name = "Show_ScanPanel"
@@ -219,7 +233,7 @@ Partial Class MainForm
         ' 
         ' ScaningPage_Btn
         ' 
-        ScaningPage_Btn.BackColor = Color.Silver
+        ScaningPage_Btn.BackColor = Color.Gainsboro
         ScaningPage_Btn.Font = New Font("黑体", 18F, FontStyle.Regular, GraphicsUnit.Point)
         ScaningPage_Btn.Location = New Point(144, 316)
         ScaningPage_Btn.Name = "ScaningPage_Btn"
@@ -232,7 +246,7 @@ Partial Class MainForm
         ' 
         Tip_0.AutoSize = True
         Tip_0.Font = New Font("黑体", 36F, FontStyle.Regular, GraphicsUnit.Point)
-        Tip_0.ForeColor = SystemColors.ButtonHighlight
+        Tip_0.ForeColor = Color.WhiteSmoke
         Tip_0.Location = New Point(124, 175)
         Tip_0.Name = "Tip_0"
         Tip_0.Size = New Size(535, 120)
@@ -241,7 +255,7 @@ Partial Class MainForm
         ' 
         ' ScaningPage
         ' 
-        ScaningPage.BackColor = Color.LightSkyBlue
+        ScaningPage.BackColor = Color.Silver
         ScaningPage.Controls.Add(VirusCount)
         ScaningPage.Controls.Add(Del)
         ScaningPage.Controls.Add(Scan_Tip)
@@ -265,7 +279,7 @@ Partial Class MainForm
         ' 
         ' Del
         ' 
-        Del.BackColor = Color.Silver
+        Del.BackColor = Color.Gainsboro
         Del.Font = New Font("黑体", 13.8F, FontStyle.Regular, GraphicsUnit.Point)
         Del.Location = New Point(840, 22)
         Del.Name = "Del"
@@ -286,7 +300,7 @@ Partial Class MainForm
         ' 
         ' ListView1
         ' 
-        ListView1.BackColor = Color.LightSkyBlue
+        ListView1.BackColor = Color.Silver
         ListView1.Columns.AddRange(New ColumnHeader() {FileName})
         ListView1.Location = New Point(6, 77)
         ListView1.Name = "ListView1"
@@ -302,7 +316,7 @@ Partial Class MainForm
         ' 
         ' 修复
         ' 
-        修复.BackColor = Color.LightSkyBlue
+        修复.BackColor = Color.Silver
         修复.Controls.Add(FixTaskMgr)
         修复.Location = New Point(4, 29)
         修复.Name = "修复"
@@ -313,7 +327,7 @@ Partial Class MainForm
         ' 
         ' FixTaskMgr
         ' 
-        FixTaskMgr.BackColor = Color.Silver
+        FixTaskMgr.BackColor = Color.Gainsboro
         FixTaskMgr.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
         FixTaskMgr.Location = New Point(27, 39)
         FixTaskMgr.Name = "FixTaskMgr"
@@ -326,7 +340,7 @@ Partial Class MainForm
         ' 
         AutoScaleDimensions = New SizeF(9F, 20F)
         AutoScaleMode = AutoScaleMode.Font
-        BackColor = Color.LightSkyBlue
+        BackColor = Color.Silver
         ClientSize = New Size(1079, 717)
         Controls.Add(Panel1)
         Controls.Add(CtrlPanel)
@@ -338,8 +352,6 @@ Partial Class MainForm
         Panel_Move.ResumeLayout(False)
         Panel_Move.PerformLayout()
         CtrlPanel.ResumeLayout(False)
-        CType(ScanMainPage_Btn, ComponentModel.ISupportInitialize).EndInit()
-        CType(MainPage_Btn, ComponentModel.ISupportInitialize).EndInit()
         Panel1.ResumeLayout(False)
         PageCtrl.ResumeLayout(False)
         MainPage_Scan.ResumeLayout(False)
@@ -355,8 +367,6 @@ Partial Class MainForm
     Friend WithEvents Btn_Close As Label
     Friend WithEvents Btn_MinWindow As Label
     Friend WithEvents CtrlPanel As Panel
-    Friend WithEvents ScanMainPage_Btn As PictureBox
-    Friend WithEvents MainPage_Btn As PictureBox
     Friend WithEvents Panel_isGoTo As Panel
     Friend WithEvents FolderBrowserDialog1 As FolderBrowserDialog
     Friend WithEvents Panel1 As Panel
@@ -377,4 +387,7 @@ Partial Class MainForm
     Friend WithEvents Fix As Label
     Friend WithEvents 修复 As TabPage
     Friend WithEvents FixTaskMgr As Label
+    Friend WithEvents NoInternetScan_Btn As Label
+    Friend WithEvents ScanMainPage_Btn As Label
+    Friend WithEvents MainPage_Btn As Label
 End Class

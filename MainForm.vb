@@ -3,7 +3,6 @@ Imports System.Net.WebRequestMethods
 Imports System.Runtime.InteropServices
 Imports System.Security.Cryptography
 Imports System.ServiceProcess
-Imports System.Threading
 Imports Qihoo.CloudEngine
 Imports Microsoft.Win32
 
@@ -79,14 +78,13 @@ Public Class MainForm
     End Sub
 
     Private Sub ScanPage_Btn_Click(sender As Object, e As EventArgs) Handles ScanMainPage_Btn.Click
-        'State = 1
         GoToPage(2)
     End Sub
 
-    Private Sub _ScaningPage_Btn_Click(sender As Object, e As EventArgs)
+    Private Sub __ScaningPage_Btn_Click(sender As Object, e As EventArgs)
 
     End Sub
-    Public Async Function Scan(ByVal directoryPath As String) As Task
+    Public Async Function Scan(ByVal directoryPath As String, NoInternet As Boolean) As Task
         Dim s As New Scan
         'If MainForm.State = 0 Then
         Try
@@ -95,50 +93,79 @@ Public Class MainForm
             Dim NSudoDevilModeModuleHandle As IntPtr = LoadLibrary(NSudoPath) ' DLL文件名  
             ' 添加当前目录中的文件到列表中  
             If NSudoDevilModeModuleHandle <> IntPtr.Zero Then
-                For Each file In Directory.GetFiles(directoryPath)
-                    Try
+
+                Try
+                    For Each file In Directory.GetFiles(directoryPath)
                         Await Task.Run(Sub()
-                                           Dim result As FileHealthResult = FileHealth.CheckAsync(s.getMD5(file)).Result
-                                           If result IsNot Nothing Then
-                                               If result.IsOperationSuccess Then
-                                                   Me.Invoke(
-                                                        Sub()
-                                                            Me.Scan_Tip.Text = "正在扫描:" & file
-                                                        End Sub
-                                                    )
-
-
+                                           Me.Invoke(Sub() Me.Scan_Tip.Text = "正在扫描:" & file)
+                                           If Not NoInternet Then
+                                               Dim result As FileHealthResult = FileHealth.CheckAsync(s.getMD5(file)).Result
+                                               If result IsNot Nothing AndAlso result.IsOperationSuccess Then
                                                    If CInt(result.Level) > 50 Then
                                                        Try
-                                                           Me.Invoke(
-                                                                Sub()
-                                                                    Me.ListView1.Items.Add(file)
-                                                                    Me.VirusCount.Text = "威胁数量:" & Me.ListView1.Items.Count
-                                                                End Sub
-                                                       )
+                                                           Me.Invoke(Sub()
+                                                                         Me.ListView1.Items.Add(file)
+                                                                         Me.VirusCount.Text = "威胁数量:" & Me.ListView1.Items.Count
+                                                                     End Sub)
 
                                                        Catch ex As Exception
 
                                                        End Try
                                                    End If
                                                End If
+
+                                           Else
+                                               Dim startInfo As New ProcessStartInfo("yara64.exe")
+                                               With startInfo
+                                                   .UseShellExecute = False
+                                                   .RedirectStandardOutput = True ' 重定向标准输出以便可以读取它  
+                                                   .CreateNoWindow = True ' 如果不需要新窗口，可以设置为True  
+                                               End With
+                                               If Path.GetExtension(file).TrimStart(".") = "exe" Then
+                                                   startInfo.Arguments = """" + Application.StartupPath + "\yara_rules\Rule" + """" + " " & file
+                                               ElseIf Path.GetExtension(file).TrimStart(".") = "bat" Or Path.GetExtension(file).TrimStart(".") = "cmd" Then
+                                                   startInfo.Arguments = """" + Application.StartupPath + "\yara_rules\Bat_Rule" + """" + " " & file
+                                               End If
+                                               ' 替换为你的控制台程序路径  
+                                               ' 创建并启动Process对象  
+                                               Dim process As New Process()
+                                               process.StartInfo = startInfo
+                                               process.Start()
+
+                                               ' 读取进程的标准输出  
+                                               Using reader As StreamReader = process.StandardOutput
+                                                   Dim output As String = reader.ReadToEnd()
+                                                   If output <> "" Then
+                                                       Try
+                                                           Me.Invoke(
+                                                           Sub()
+                                                               Me.ListView1.Items.Add(file)
+                                                               Me.VirusCount.Text = "威胁数量:" & Me.ListView1.Items.Count
+                                                           End Sub)
+                                                       Catch ex As Exception
+                                                       End Try
+                                                   End If
+                                               End Using
+
+                                               ' 等待进程结束  
+                                               process.WaitForExit()
                                            End If
                                        End Sub)
 
 
                         If ListView1.Items.Count = 0 Then VirusCount.Text = "威胁数量:0"
+                    Next
+                Catch e As Exception
+                    Debug.Print(e.Message)
+                End Try
 
-                    Catch e As Exception
-                        Debug.Print(e.Message)
-                    End Try
-                Next
             Else
                 MsgBox("扫描失败！")
             End If
 
             FreeLibrary(NSudoDevilModeModuleHandle)
             For Each subDir In Directory.GetDirectories(directoryPath)
-                Await Scan(subDir)
+                Await Scan(subDir, NoInternet)
             Next
 
         Catch e As Exception
@@ -150,7 +177,7 @@ Public Class MainForm
 
 
 
-    Private Sub Del_Click(sender As Object, e As EventArgs)
+    Private Sub Del_Click(sender As Object, e As EventArgs) Handles Del.Click
         Dim NSudoPath = Application.StartupPath + "NSudoDM.dll"
 
         Dim NSudoDevilModeModuleHandle As IntPtr = LoadLibrary(NSudoPath) ' DLL文件名  
@@ -163,9 +190,9 @@ Public Class MainForm
             ' 更新威胁数量  
             Me.VirusCount.Text = "威胁数量:" & ListView1.Items.Count
         Catch ex As Exception
-
+            MsgBox("失败！",, "删除病毒失败！")
         End Try
-        MsgBox("完成！",, "删除病毒")
+        MsgBox("完成！",, "删除病毒成功！")
 
         FreeLibrary(NSudoDevilModeModuleHandle)
 
@@ -187,11 +214,9 @@ Public Class MainForm
     End Sub
 
     Private Async Sub ScaningPage_Btn_Click(sender As Object, e As EventArgs) Handles ScaningPage_Btn.Click
-        ListView1.Items.Clear()
-        Me.VirusCount.Text = "威胁数量:0"
-        Me.Scan_Tip.Text = "正在扫描"
+
         GoToPage(3)
-        Await Scan("C:\")
+        Await Scan("C:\", False)
 
 
     End Sub
@@ -205,9 +230,7 @@ Public Class MainForm
 
 
     Private Async Sub SelPathScan_Btn_Click(sender As Object, e As EventArgs) Handles SelPathScan_Btn.Click
-        ListView1.Items.Clear()
-        Me.VirusCount.Text = "威胁数量:0"
-        Me.Scan_Tip.Text = "正在扫描"
+
 
 
 
@@ -217,28 +240,11 @@ Public Class MainForm
             GoToPage(3)
             '  Dim s As New Scan
 
-            Await Scan(FolderBrowserDialog1.SelectedPath)
+            Await Scan(FolderBrowserDialog1.SelectedPath, False)
 
         End If
     End Sub
 
-    Private Sub Show_ScanPanel_Click_1(sender As Object, e As EventArgs)
-
-
-    End Sub
-
-    Private Sub Panel_Move_Paint(sender As Object, e As PaintEventArgs) Handles Panel_Move.Paint
-
-    End Sub
-
-    Private Sub Show_ScanPanel_Click(sender As Object, e As EventArgs)
-
-
-    End Sub
-
-    Private Sub Tip_0_Click(sender As Object, e As EventArgs) Handles Tip_0.Click
-
-    End Sub
 
     Private Sub Show_ScanPanel_Click_2(sender As Object, e As EventArgs) Handles Show_ScanPanel.Click
         If ScanPanel.Visible Then
@@ -262,6 +268,29 @@ Public Class MainForm
 
         End If
     End Sub
+
+    Private Async Sub NoInternetScan_Btn_Click(sender As Object, e As EventArgs) Handles NoInternetScan_Btn.Click
+
+
+
+        If FolderBrowserDialog1.ShowDialog = DialogResult.OK Then
+
+            '  State = 0
+            GoToPage(3)
+            '  Dim s As New Scan
+
+            Await Scan(FolderBrowserDialog1.SelectedPath, True)
+
+        End If
+    End Sub
+
+    Private Sub PageCtrl_SelectedIndexChanged(sender As Object, e As EventArgs) Handles PageCtrl.SelectedIndexChanged
+        If PageCtrl.SelectedIndex = 2 Then
+            ListView1.Items.Clear()
+            VirusCount.Text = "威胁数量:0"
+            Scan_Tip.Text = "正在扫描"
+        End If
+    End Sub
 End Class
 
 Public Class Scan
@@ -274,64 +303,7 @@ Public Class Scan
     Shared Function FreeLibrary(hLibModule As IntPtr) As Boolean
     End Function
 
-    Public Async Function ProcessCheck() As Task
 
-
-
-        Await Task.Run(Async Function()
-                           Dim NSudoPath = Application.StartupPath + "NSudoDM.dll" 'dll路径
-                           Dim prevProcesses() As Process = {}
-                           Dim currentProcesses() As Process = Process.GetProcesses()
-                           Dim s As New Scan()
-                           While True
-                               Dim NSudoDevilModeModuleHandle As IntPtr = LoadLibrary(NSudoPath) ' DLL文件名  
-
-                               ' 获取当前所有进程  
-                               Dim currentProcessesSnapshot() As Process = Process.GetProcesses()
-                               ' 检测新进程  
-                               For Each newProcess In currentProcessesSnapshot.Except(prevProcesses).ToList
-                                   Try
-                                       Dim md5 As String
-                                       If Not (IsServiceRunning(newProcess.ProcessName)) Then
-                                           md5 = s.getMD5(newProcess.MainModule.FileName)
-                                       Else
-                                           Continue For
-                                       End If
-
-                                       Dim result As FileHealthResult = FileHealth.CheckAsync(md5).Result
-                                       If result IsNot Nothing And result.IsOperationSuccess Then
-
-                                           If result.Level > 50 Then
-                                               If MainForm.InvokeRequired Then
-                                                   MainForm.Invoke(Sub() start(newProcess.MainModule.FileName, result.MalwareType, newProcess.ProcessName))
-                                               Else
-                                                   start(newProcess.MainModule.FileName, result.MalwareType, newProcess.ProcessName)
-                                               End If
-
-                                           End If
-                                           Debug.Print("Name=" & newProcess.ProcessName & ",Path=" & newProcess.MainModule.FileName & ",Level=" & result.Level)
-
-                                       End If
-                                       prevProcesses.Append(newProcess)
-                                   Catch ex As Exception
-                                       Debug.Print(ex.Message)
-                                   End Try
-                               Next
-
-                               ' 更新prevProcesses列表  
-                               prevProcesses = currentProcessesSnapshot
-                               FreeLibrary(NSudoDevilModeModuleHandle)
-
-
-                           End While
-                       End Function)
-    End Function
-    Public Function start(a, __, ___)
-        Dim ad As New ActiveDefense()
-        ad.Show()
-        ' ad.Receive_Messages(a, __, ___)
-        start = ""
-    End Function
     Function IsServiceRunning(serviceName As String) As Boolean
         Try
 
