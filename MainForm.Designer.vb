@@ -27,6 +27,7 @@ Partial Class MainForm
         Btn_MinWindow = New Label()
         Btn_Close = New Label()
         CtrlPanel = New Panel()
+        Settings_Btn = New Label()
         MainPage_Btn = New Label()
         ScanMainPage_Btn = New Label()
         Fix = New Label()
@@ -50,6 +51,10 @@ Partial Class MainForm
         FileName = New ColumnHeader()
         修复 = New TabPage()
         FixTaskMgr = New Label()
+        Settings = New TabPage()
+        T1 = New Label()
+        YaraScan = New RadioButton()
+        MD5Scan = New RadioButton()
         Panel_Move.SuspendLayout()
         CtrlPanel.SuspendLayout()
         Panel1.SuspendLayout()
@@ -58,6 +63,7 @@ Partial Class MainForm
         ScanPanel.SuspendLayout()
         ScaningPage.SuspendLayout()
         修复.SuspendLayout()
+        Settings.SuspendLayout()
         SuspendLayout()
         ' 
         ' Panel_Move
@@ -93,6 +99,7 @@ Partial Class MainForm
         ' CtrlPanel
         ' 
         CtrlPanel.BackColor = Color.Silver
+        CtrlPanel.Controls.Add(Settings_Btn)
         CtrlPanel.Controls.Add(MainPage_Btn)
         CtrlPanel.Controls.Add(ScanMainPage_Btn)
         CtrlPanel.Controls.Add(Fix)
@@ -102,6 +109,17 @@ Partial Class MainForm
         CtrlPanel.Size = New Size(133, 674)
         CtrlPanel.TabIndex = 0
         ' 
+        ' Settings_Btn
+        ' 
+        Settings_Btn.BackColor = Color.Gainsboro
+        Settings_Btn.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
+        Settings_Btn.Location = New Point(24, 196)
+        Settings_Btn.Name = "Settings_Btn"
+        Settings_Btn.Size = New Size(106, 49)
+        Settings_Btn.TabIndex = 11
+        Settings_Btn.Text = "⚙设置"
+        Settings_Btn.TextAlign = ContentAlignment.MiddleCenter
+        ' 
         ' MainPage_Btn
         ' 
         MainPage_Btn.BackColor = Color.Gainsboro
@@ -110,7 +128,7 @@ Partial Class MainForm
         MainPage_Btn.Name = "MainPage_Btn"
         MainPage_Btn.Size = New Size(106, 49)
         MainPage_Btn.TabIndex = 10
-        MainPage_Btn.Text = "主页"
+        MainPage_Btn.Text = "🏠主页"
         MainPage_Btn.TextAlign = ContentAlignment.MiddleCenter
         ' 
         ' ScanMainPage_Btn
@@ -121,7 +139,7 @@ Partial Class MainForm
         ScanMainPage_Btn.Name = "ScanMainPage_Btn"
         ScanMainPage_Btn.Size = New Size(106, 49)
         ScanMainPage_Btn.TabIndex = 9
-        ScanMainPage_Btn.Text = "查杀"
+        ScanMainPage_Btn.Text = "🔍查杀"
         ScanMainPage_Btn.TextAlign = ContentAlignment.MiddleCenter
         ' 
         ' Fix
@@ -132,7 +150,7 @@ Partial Class MainForm
         Fix.Name = "Fix"
         Fix.Size = New Size(106, 49)
         Fix.TabIndex = 8
-        Fix.Text = "修复"
+        Fix.Text = "🛠️修复"
         Fix.TextAlign = ContentAlignment.MiddleCenter
         ' 
         ' Panel_isGoTo
@@ -157,6 +175,7 @@ Partial Class MainForm
         PageCtrl.Controls.Add(MainPage_Scan)
         PageCtrl.Controls.Add(ScaningPage)
         PageCtrl.Controls.Add(修复)
+        PageCtrl.Controls.Add(Settings)
         PageCtrl.ItemSize = New Size(1, 25)
         PageCtrl.Location = New Point(-10, -8)
         PageCtrl.Name = "PageCtrl"
@@ -336,6 +355,49 @@ Partial Class MainForm
         FixTaskMgr.Text = "修复任务管理器"
         FixTaskMgr.TextAlign = ContentAlignment.MiddleCenter
         ' 
+        ' Settings
+        ' 
+        Settings.BackColor = Color.Silver
+        Settings.Controls.Add(T1)
+        Settings.Controls.Add(YaraScan)
+        Settings.Controls.Add(MD5Scan)
+        Settings.Location = New Point(4, 29)
+        Settings.Name = "Settings"
+        Settings.Padding = New Padding(3)
+        Settings.Size = New Size(953, 654)
+        Settings.TabIndex = 4
+        Settings.Text = "设置"
+        ' 
+        ' T1
+        ' 
+        T1.AutoSize = True
+        T1.Font = New Font("黑体", 12F, FontStyle.Regular, GraphicsUnit.Point)
+        T1.Location = New Point(28, 39)
+        T1.Name = "T1"
+        T1.Size = New Size(89, 20)
+        T1.TabIndex = 2
+        T1.Text = "引擎设置"
+        ' 
+        ' YaraScan
+        ' 
+        YaraScan.AutoSize = True
+        YaraScan.Location = New Point(28, 97)
+        YaraScan.Name = "YaraScan"
+        YaraScan.Size = New Size(121, 24)
+        YaraScan.TabIndex = 1
+        YaraScan.Text = "Yara规则查杀"
+        YaraScan.UseVisualStyleBackColor = True
+        ' 
+        ' MD5Scan
+        ' 
+        MD5Scan.AutoSize = True
+        MD5Scan.Location = New Point(28, 67)
+        MD5Scan.Name = "MD5Scan"
+        MD5Scan.Size = New Size(95, 24)
+        MD5Scan.TabIndex = 0
+        MD5Scan.Text = "MD5查杀"
+        MD5Scan.UseVisualStyleBackColor = True
+        ' 
         ' MainForm
         ' 
         AutoScaleDimensions = New SizeF(9F, 20F)
@@ -360,6 +422,8 @@ Partial Class MainForm
         ScaningPage.ResumeLayout(False)
         ScaningPage.PerformLayout()
         修复.ResumeLayout(False)
+        Settings.ResumeLayout(False)
+        Settings.PerformLayout()
         ResumeLayout(False)
     End Sub
 
@@ -390,4 +454,9 @@ Partial Class MainForm
     Friend WithEvents NoInternetScan_Btn As Label
     Friend WithEvents ScanMainPage_Btn As Label
     Friend WithEvents MainPage_Btn As Label
+    Friend WithEvents Settings_Btn As Label
+    Friend WithEvents Settings As TabPage
+    Friend WithEvents MD5Scan As RadioButton
+    Friend WithEvents YaraScan As RadioButton
+    Friend WithEvents T1 As Label
 End Class
