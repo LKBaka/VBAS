@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <StartupObject>Sub Main</StartupObject>
+    <StartupObject>VBAS.My.MyApplication</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
@@ -17,10 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AsmResolver.PE.File" Version="5.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PeNet" Version="4.0.4" />
-    <PackageReference Include="PInvoke.Windows.Core" Version="0.7.124" />
     <PackageReference Include="Qihoo.CloudEngine" Version="1.0.1" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.0" />
   </ItemGroup>

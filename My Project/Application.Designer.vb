@@ -33,7 +33,7 @@ Namespace My
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _
         Protected Overrides Sub OnCreateMainForm()
-            Me.MainForm = Global.VBAS.MainForm
+            Me.MainForm = Global.VBAS.Loading
         End Sub
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _

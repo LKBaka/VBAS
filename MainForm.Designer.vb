@@ -30,7 +30,7 @@ Partial Class MainForm
         Settings_Btn = New Label()
         MainPage_Btn = New Label()
         ScanMainPage_Btn = New Label()
-        Fix = New Label()
+        Tools = New Label()
         Panel_isGoTo = New Panel()
         FolderBrowserDialog1 = New FolderBrowserDialog()
         Panel1 = New Panel()
@@ -44,6 +44,7 @@ Partial Class MainForm
         ScaningPage_Btn = New Label()
         Tip_0 = New Label()
         ScaningPage = New TabPage()
+        PBar = New ProgressBar()
         VirusCount = New Label()
         Del = New Label()
         Scan_Tip = New Label()
@@ -52,9 +53,11 @@ Partial Class MainForm
         修复 = New TabPage()
         FixTaskMgr = New Label()
         Settings = New TabPage()
+        PEScan = New RadioButton()
         T1 = New Label()
         YaraScan = New RadioButton()
         MD5Scan = New RadioButton()
+        EndProcess = New Label()
         Panel_Move.SuspendLayout()
         CtrlPanel.SuspendLayout()
         Panel1.SuspendLayout()
@@ -102,7 +105,7 @@ Partial Class MainForm
         CtrlPanel.Controls.Add(Settings_Btn)
         CtrlPanel.Controls.Add(MainPage_Btn)
         CtrlPanel.Controls.Add(ScanMainPage_Btn)
-        CtrlPanel.Controls.Add(Fix)
+        CtrlPanel.Controls.Add(Tools)
         CtrlPanel.Controls.Add(Panel_isGoTo)
         CtrlPanel.Location = New Point(0, 43)
         CtrlPanel.Name = "CtrlPanel"
@@ -142,16 +145,16 @@ Partial Class MainForm
         ScanMainPage_Btn.Text = "🔍查杀"
         ScanMainPage_Btn.TextAlign = ContentAlignment.MiddleCenter
         ' 
-        ' Fix
+        ' Tools
         ' 
-        Fix.BackColor = Color.Gainsboro
-        Fix.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
-        Fix.Location = New Point(23, 142)
-        Fix.Name = "Fix"
-        Fix.Size = New Size(106, 49)
-        Fix.TabIndex = 8
-        Fix.Text = "🛠️修复"
-        Fix.TextAlign = ContentAlignment.MiddleCenter
+        Tools.BackColor = Color.Gainsboro
+        Tools.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
+        Tools.Location = New Point(23, 142)
+        Tools.Name = "Tools"
+        Tools.Size = New Size(106, 49)
+        Tools.TabIndex = 8
+        Tools.Text = "🛠️工具"
+        Tools.TextAlign = ContentAlignment.MiddleCenter
         ' 
         ' Panel_isGoTo
         ' 
@@ -275,6 +278,7 @@ Partial Class MainForm
         ' ScaningPage
         ' 
         ScaningPage.BackColor = Color.Silver
+        ScaningPage.Controls.Add(PBar)
         ScaningPage.Controls.Add(VirusCount)
         ScaningPage.Controls.Add(Del)
         ScaningPage.Controls.Add(Scan_Tip)
@@ -285,6 +289,13 @@ Partial Class MainForm
         ScaningPage.Size = New Size(953, 654)
         ScaningPage.TabIndex = 2
         ScaningPage.Text = "查杀_扫描中"
+        ' 
+        ' PBar
+        ' 
+        PBar.Location = New Point(10, 73)
+        PBar.Name = "PBar"
+        PBar.Size = New Size(924, 29)
+        PBar.TabIndex = 5
         ' 
         ' VirusCount
         ' 
@@ -321,9 +332,9 @@ Partial Class MainForm
         ' 
         ListView1.BackColor = Color.Silver
         ListView1.Columns.AddRange(New ColumnHeader() {FileName})
-        ListView1.Location = New Point(6, 77)
+        ListView1.Location = New Point(6, 108)
         ListView1.Name = "ListView1"
-        ListView1.Size = New Size(941, 577)
+        ListView1.Size = New Size(941, 546)
         ListView1.TabIndex = 1
         ListView1.UseCompatibleStateImageBehavior = False
         ListView1.View = View.Details
@@ -336,6 +347,7 @@ Partial Class MainForm
         ' 修复
         ' 
         修复.BackColor = Color.Silver
+        修复.Controls.Add(EndProcess)
         修复.Controls.Add(FixTaskMgr)
         修复.Location = New Point(4, 29)
         修复.Name = "修复"
@@ -358,6 +370,7 @@ Partial Class MainForm
         ' Settings
         ' 
         Settings.BackColor = Color.Silver
+        Settings.Controls.Add(PEScan)
         Settings.Controls.Add(T1)
         Settings.Controls.Add(YaraScan)
         Settings.Controls.Add(MD5Scan)
@@ -367,6 +380,16 @@ Partial Class MainForm
         Settings.Size = New Size(953, 654)
         Settings.TabIndex = 4
         Settings.Text = "设置"
+        ' 
+        ' PEScan
+        ' 
+        PEScan.AutoSize = True
+        PEScan.Location = New Point(28, 127)
+        PEScan.Name = "PEScan"
+        PEScan.Size = New Size(210, 24)
+        PEScan.TabIndex = 3
+        PEScan.Text = "PE表查杀 (WindowsKiller)"
+        PEScan.UseVisualStyleBackColor = True
         ' 
         ' T1
         ' 
@@ -383,9 +406,9 @@ Partial Class MainForm
         YaraScan.AutoSize = True
         YaraScan.Location = New Point(28, 97)
         YaraScan.Name = "YaraScan"
-        YaraScan.Size = New Size(121, 24)
+        YaraScan.Size = New Size(239, 24)
         YaraScan.TabIndex = 1
-        YaraScan.Text = "Yara规则查杀"
+        YaraScan.Text = "Yara规则查杀 (WindowsKiller)"
         YaraScan.UseVisualStyleBackColor = True
         ' 
         ' MD5Scan
@@ -397,6 +420,17 @@ Partial Class MainForm
         MD5Scan.TabIndex = 0
         MD5Scan.Text = "MD5查杀"
         MD5Scan.UseVisualStyleBackColor = True
+        ' 
+        ' EndProcess
+        ' 
+        EndProcess.BackColor = Color.Gainsboro
+        EndProcess.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
+        EndProcess.Location = New Point(229, 39)
+        EndProcess.Name = "EndProcess"
+        EndProcess.Size = New Size(196, 49)
+        EndProcess.TabIndex = 10
+        EndProcess.Text = "强制进程结束器"
+        EndProcess.TextAlign = ContentAlignment.MiddleCenter
         ' 
         ' MainForm
         ' 
@@ -434,29 +468,32 @@ Partial Class MainForm
     Friend WithEvents Panel_isGoTo As Panel
     Friend WithEvents FolderBrowserDialog1 As FolderBrowserDialog
     Friend WithEvents Panel1 As Panel
+    Friend WithEvents Tools As Label
+    Friend WithEvents ScanMainPage_Btn As Label
+    Friend WithEvents MainPage_Btn As Label
+    Friend WithEvents Settings_Btn As Label
     Friend WithEvents PageCtrl As TabControl
     Friend WithEvents MainPgae As TabPage
     Friend WithEvents MainPage_Scan As TabPage
+    Friend WithEvents ScanPanel As Panel
+    Friend WithEvents NoInternetScan_Btn As Label
+    Friend WithEvents SelPathScan_Btn As Label
+    Friend WithEvents Show_ScanPanel As Label
     Friend WithEvents ScaningPage_Btn As Label
     Friend WithEvents Tip_0 As Label
     Friend WithEvents ScaningPage As TabPage
+    Friend WithEvents PBar As ProgressBar
     Friend WithEvents VirusCount As Label
     Friend WithEvents Del As Label
     Friend WithEvents Scan_Tip As Label
     Friend WithEvents ListView1 As ListView
     Friend WithEvents FileName As ColumnHeader
-    Friend WithEvents Show_ScanPanel As Label
-    Friend WithEvents ScanPanel As Panel
-    Friend WithEvents SelPathScan_Btn As Label
-    Friend WithEvents Fix As Label
     Friend WithEvents 修复 As TabPage
     Friend WithEvents FixTaskMgr As Label
-    Friend WithEvents NoInternetScan_Btn As Label
-    Friend WithEvents ScanMainPage_Btn As Label
-    Friend WithEvents MainPage_Btn As Label
-    Friend WithEvents Settings_Btn As Label
     Friend WithEvents Settings As TabPage
-    Friend WithEvents MD5Scan As RadioButton
-    Friend WithEvents YaraScan As RadioButton
+    Friend WithEvents PEScan As RadioButton
     Friend WithEvents T1 As Label
+    Friend WithEvents YaraScan As RadioButton
+    Friend WithEvents MD5Scan As RadioButton
+    Friend WithEvents EndProcess As Label
 End Class
