@@ -17,6 +17,7 @@
     End Sub
 
     Private Sub Loading_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'ProcCheck.Show()
         Timer1.Start()
     End Sub
 End Class

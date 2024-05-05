@@ -36,6 +36,7 @@ Partial Class MainForm
         Panel1 = New Panel()
         PageCtrl = New TabControl()
         MainPgae = New TabPage()
+        Label1 = New Label()
         MainPage_Scan = New TabPage()
         ScanPanel = New Panel()
         NoInternetScan_Btn = New Label()
@@ -51,17 +52,18 @@ Partial Class MainForm
         ListView1 = New ListView()
         FileName = New ColumnHeader()
         修复 = New TabPage()
+        FixRegedit = New Label()
+        EndProcess = New Label()
         FixTaskMgr = New Label()
         Settings = New TabPage()
         PEScan = New RadioButton()
         T1 = New Label()
-        YaraScan = New RadioButton()
         MD5Scan = New RadioButton()
-        EndProcess = New Label()
         Panel_Move.SuspendLayout()
         CtrlPanel.SuspendLayout()
         Panel1.SuspendLayout()
         PageCtrl.SuspendLayout()
+        MainPgae.SuspendLayout()
         MainPage_Scan.SuspendLayout()
         ScanPanel.SuspendLayout()
         ScaningPage.SuspendLayout()
@@ -189,12 +191,24 @@ Partial Class MainForm
         ' MainPgae
         ' 
         MainPgae.BackColor = Color.Silver
+        MainPgae.Controls.Add(Label1)
         MainPgae.Location = New Point(4, 29)
         MainPgae.Name = "MainPgae"
         MainPgae.Padding = New Padding(3)
         MainPgae.Size = New Size(953, 654)
         MainPgae.TabIndex = 0
         MainPgae.Text = "主界面"
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Font = New Font("黑体", 36F, FontStyle.Regular, GraphicsUnit.Point)
+        Label1.ForeColor = Color.WhiteSmoke
+        Label1.Location = New Point(107, 121)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(535, 120)
+        Label1.TabIndex = 2
+        Label1.Text = "这个人类真懒" & vbCrLf & "主页都不整一个-_-"
         ' 
         ' MainPage_Scan
         ' 
@@ -347,6 +361,7 @@ Partial Class MainForm
         ' 修复
         ' 
         修复.BackColor = Color.Silver
+        修复.Controls.Add(FixRegedit)
         修复.Controls.Add(EndProcess)
         修复.Controls.Add(FixTaskMgr)
         修复.Location = New Point(4, 29)
@@ -355,6 +370,28 @@ Partial Class MainForm
         修复.Size = New Size(953, 654)
         修复.TabIndex = 3
         修复.Text = "修复"
+        ' 
+        ' FixRegedit
+        ' 
+        FixRegedit.BackColor = Color.Gainsboro
+        FixRegedit.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
+        FixRegedit.Location = New Point(431, 39)
+        FixRegedit.Name = "FixRegedit"
+        FixRegedit.Size = New Size(196, 49)
+        FixRegedit.TabIndex = 11
+        FixRegedit.Text = "修复注册表"
+        FixRegedit.TextAlign = ContentAlignment.MiddleCenter
+        ' 
+        ' EndProcess
+        ' 
+        EndProcess.BackColor = Color.Gainsboro
+        EndProcess.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
+        EndProcess.Location = New Point(229, 39)
+        EndProcess.Name = "EndProcess"
+        EndProcess.Size = New Size(196, 49)
+        EndProcess.TabIndex = 10
+        EndProcess.Text = "强制进程结束器"
+        EndProcess.TextAlign = ContentAlignment.MiddleCenter
         ' 
         ' FixTaskMgr
         ' 
@@ -372,7 +409,6 @@ Partial Class MainForm
         Settings.BackColor = Color.Silver
         Settings.Controls.Add(PEScan)
         Settings.Controls.Add(T1)
-        Settings.Controls.Add(YaraScan)
         Settings.Controls.Add(MD5Scan)
         Settings.Location = New Point(4, 29)
         Settings.Name = "Settings"
@@ -384,7 +420,7 @@ Partial Class MainForm
         ' PEScan
         ' 
         PEScan.AutoSize = True
-        PEScan.Location = New Point(28, 127)
+        PEScan.Location = New Point(28, 97)
         PEScan.Name = "PEScan"
         PEScan.Size = New Size(210, 24)
         PEScan.TabIndex = 3
@@ -401,16 +437,6 @@ Partial Class MainForm
         T1.TabIndex = 2
         T1.Text = "引擎设置"
         ' 
-        ' YaraScan
-        ' 
-        YaraScan.AutoSize = True
-        YaraScan.Location = New Point(28, 97)
-        YaraScan.Name = "YaraScan"
-        YaraScan.Size = New Size(239, 24)
-        YaraScan.TabIndex = 1
-        YaraScan.Text = "Yara规则查杀 (WindowsKiller)"
-        YaraScan.UseVisualStyleBackColor = True
-        ' 
         ' MD5Scan
         ' 
         MD5Scan.AutoSize = True
@@ -421,17 +447,6 @@ Partial Class MainForm
         MD5Scan.Text = "MD5查杀"
         MD5Scan.UseVisualStyleBackColor = True
         ' 
-        ' EndProcess
-        ' 
-        EndProcess.BackColor = Color.Gainsboro
-        EndProcess.Font = New Font("黑体", 13.5F, FontStyle.Regular, GraphicsUnit.Point)
-        EndProcess.Location = New Point(229, 39)
-        EndProcess.Name = "EndProcess"
-        EndProcess.Size = New Size(196, 49)
-        EndProcess.TabIndex = 10
-        EndProcess.Text = "强制进程结束器"
-        EndProcess.TextAlign = ContentAlignment.MiddleCenter
-        ' 
         ' MainForm
         ' 
         AutoScaleDimensions = New SizeF(9F, 20F)
@@ -441,6 +456,7 @@ Partial Class MainForm
         Controls.Add(Panel1)
         Controls.Add(CtrlPanel)
         Controls.Add(Panel_Move)
+        DoubleBuffered = True
         FormBorderStyle = FormBorderStyle.None
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Name = "MainForm"
@@ -450,6 +466,8 @@ Partial Class MainForm
         CtrlPanel.ResumeLayout(False)
         Panel1.ResumeLayout(False)
         PageCtrl.ResumeLayout(False)
+        MainPgae.ResumeLayout(False)
+        MainPgae.PerformLayout()
         MainPage_Scan.ResumeLayout(False)
         MainPage_Scan.PerformLayout()
         ScanPanel.ResumeLayout(False)
@@ -493,7 +511,8 @@ Partial Class MainForm
     Friend WithEvents Settings As TabPage
     Friend WithEvents PEScan As RadioButton
     Friend WithEvents T1 As Label
-    Friend WithEvents YaraScan As RadioButton
     Friend WithEvents MD5Scan As RadioButton
     Friend WithEvents EndProcess As Label
+    Friend WithEvents Label1 As Label
+    Friend WithEvents FixRegedit As Label
 End Class

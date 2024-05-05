@@ -8,6 +8,7 @@ Imports System.Net.Http
 Imports Newtonsoft.Json.Linq
 Imports PeNet
 Imports System.Reflection
+Imports System.Drawing.Drawing2D
 Public Class MainForm
     <DllImport("kernel32.dll", SetLastError:=True, CharSet:=CharSet.Auto)>
     Private Shared Function TerminateProcess(ByVal hProcess As IntPtr, ByVal uExitCode As UInt32) As Boolean
@@ -35,6 +36,7 @@ Public Class MainForm
     Public configs As New List(Of String) From {}
     Public VirusFuncs As New List(Of String) From {}
     Public ScanedFile As New List(Of String) From {}
+    Public wasd = 0
     Private Sub Panel_Move_MouseDown(sender As Object, e As MouseEventArgs) Handles Panel_Move.MouseDown
         ReleaseCapture
         SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0&)
@@ -48,7 +50,8 @@ Public Class MainForm
             Top += 10
             Opacity -= 0.22
         Next
-        Application.Exit()
+        Close()
+        'Application.Exit()
     End Sub
 
     Private Sub Btn_MinWindow_Click(sender As Object, e As EventArgs) Handles Btn_MinWindow.Click
@@ -105,20 +108,19 @@ Public Class MainForm
             ' 遍历所有找到的进程  
             For Each process As Process In processes
                 ' 确保我们有足够的权限来结束进程  
-                If Not process.HasExited Then
-                    Try
-                        ' 尝试以管理员权限结束进程  
-                        Dim success As Boolean = TerminateProcess(process.Handle, 0)
-                        If success Then
-                            MsgBox($"成功结束进程{process.ProcessName}",, "VBAS")
-                        Else
-                            MsgBox($"结束{process.ProcessName}进程失败",, "VBAS")
-                        End If
-                    Catch ex As Exception
-                        ' 处理可能出现的异常，比如访问被拒绝等  
-                        MsgBox("拒绝访问", , "VBAS")
-                    End Try
-                End If
+                If process.HasExited Then Return
+                Try
+                    ' 尝试以管理员权限结束进程  
+                    Dim success As Boolean = TerminateProcess(process.Handle, 0)
+                    If success Then
+                        MsgBox($"成功结束进程{process.ProcessName}",, "VBAS")
+                    Else
+                        MsgBox($"结束{process.ProcessName}进程失败",, "VBAS")
+                    End If
+                Catch ex As Exception
+                    ' 处理可能出现的异常，比如访问被拒绝等  
+                    MsgBox("拒绝访问", , "VBAS")
+                End Try
             Next
             FreeLibrary(NSudoDevilModeModuleHandle)
         Catch ex As Exception
@@ -144,73 +146,73 @@ Public Class MainForm
 
                 Try
                     For Each file In Directory.GetFiles(directoryPath)
-                        Await Task.Run(Async Sub()
+                        Await Task.Run(action:=Async Sub()
 
-                                           Dim ScanFileCount As Integer = 0
-                                           Me.Invoke(Sub() Me.Scan_Tip.Text = "正在扫描:" & file)
-                                           If Not NoInternet Then
-                                               Try
-                                                   ' 创建HttpClient实例  
-                                                   Using client As New HttpClient()
-                                                       ' 设置请求的URL  
-                                                       Dim url As String = "http://cdn2.fileinfo.kolostudio.fun/FileInfo?" + s.getMD5(file)
+                                                   Dim ScanFileCount As Integer = 0
+                                                   Me.Invoke(Sub() Me.Scan_Tip.Text = "正在扫描:" & file)
+                                                   If Not NoInternet Then
+                                                       Try
+                                                           ' 创建HttpClient实例  
+                                                           Using client As New HttpClient()
+                                                               ' 设置请求的URL  
+                                                               Dim url As String = "http://cdn2.fileinfo.kolostudio.fun/FileInfo?" + s.getMD5(file)
 
-                                                       ' 发送GET请求  
-                                                       Dim response As HttpResponseMessage = Await client.GetAsync(url)
+                                                               ' 发送GET请求  
+                                                               Dim response As HttpResponseMessage = Await client.GetAsync(url)
 
-                                                       ' 确保请求成功  
-                                                       If response.IsSuccessStatusCode Then
-                                                           ' 读取响应内容  
-                                                           Dim content As String = Await response.Content.ReadAsStringAsync()
-                                                           'Console.WriteLine(content)
-                                                           ' Debug.Print(content)
+                                                               ' 确保请求成功  
+                                                               If response.IsSuccessStatusCode Then
+                                                                   ' 读取响应内容  
+                                                                   Dim content As String = Await response.Content.ReadAsStringAsync()
+                                                                   'Console.WriteLine(content)
+                                                                   ' Debug.Print(content)
 
-                                                           ' 解析JSON字符串为JObject  
-                                                           Dim jObject As JObject = JObject.Parse(content)
+                                                                   ' 解析JSON字符串为JObject  
+                                                                   Dim jObject As JObject = JObject.Parse(content)
 
-                                                           ' 从result对象中获取Safe_Level的值  
-                                                           Dim resultObject As JObject = jObject("result")
-                                                           Dim safeLevel As Integer = CInt(resultObject("Safe_Level"))
-                                                           If CInt(safeLevel) <= 40 Then
-                                                               Me.Invoke(
+                                                                   ' 从result对象中获取Safe_Level的值  
+                                                                   Dim resultObject As JObject = jObject("result")
+                                                                   Dim safeLevel As Integer = CInt(resultObject("Safe_Level"))
+                                                                   If CInt(safeLevel) <= 40 Then
+                                                                       Me.Invoke(
                                                                    Sub()
                                                                        Me.ListView1.Items.Add(file)
                                                                        Me.VirusCount.Text = "威胁数量:" & Me.ListView1.Items.Count
                                                                        ScanFileCount += 1
 
                                                                    End Sub)
-                                                           End If
-                                                       Else
-                                                           Me.Invoke(
+                                                                   End If
+                                                               Else
+                                                                   Me.Invoke(
                                                                    Sub()
                                                                        Me.ListView1.Items.Add("错误码:" & response.StatusCode)
                                                                        'Me.VirusCount.Text = "威胁数量:" & Me.ListView1.Items.Count
                                                                    End Sub)
 
+                                                               End If
+                                                           End Using
+                                                       Catch ex As Exception
+
+                                                       End Try
+
+                                                   Else
+                                                       If NoInternetScanMode = "Yara" Then
+                                                           Dim taskYara = YaraScanFunc(file)
+                                                           ScanFileCount += 1
+                                                       ElseIf NoInternetScanMode = "MD5" Then
+                                                           Dim taskMD5 = MD5ScanFunc(file)
+                                                           ScanFileCount += 1
+                                                       Else
+                                                           Dim taskPE = PEFuncScanFunc(file)
+                                                           ScanFileCount += 1
                                                        End If
-                                                   End Using
-                                               Catch ex As Exception
+                                                   End If
+                                                   'Me.Invoke(Sub() PBar.Value = ScanFileCount / 100)
 
-                                               End Try
-
-                                           Else
-                                               If NoInternetScanMode = "Yara" Then
-                                                   Dim taskYara = YaraScanFunc(file)
-                                                   ScanFileCount += 1
-                                               ElseIf NoInternetScanMode = "MD5" Then
-                                                   Dim taskMD5 = MD5ScanFunc(file)
-                                                   ScanFileCount += 1
-                                               Else
-                                                   Dim taskPE = PEFuncScanFunc(file)
-                                                   ScanFileCount += 1
-                                               End If
-                                           End If
-                                           'Me.Invoke(Sub() PBar.Value = ScanFileCount / 100)
-
-                                           Me.Invoke(Sub() If ScanFileCount < 100 Then PBar.Value = ScanFileCount Else PBar.Value = ScanFileCount / 2)
+                                                   Me.Invoke(Sub() If ScanFileCount < 100 Then PBar.Value = ScanFileCount Else PBar.Value = ScanFileCount / 2)
 
 
-                                       End Sub)
+                                               End Sub)
 
 
                         If ListView1.Items.Count = 0 Then VirusCount.Text = "威胁数量:0"
@@ -255,6 +257,7 @@ Public Class MainForm
                                .UseShellExecute = False
                                .RedirectStandardOutput = True ' 重定向标准输出以便可以读取它  
                                .CreateNoWindow = True ' 如果不需要新窗口，可以设置为True  
+                               .Arguments = ""
                            End With
                            Dim fileExtension As String = Path.GetExtension(file).TrimStart(".")
                            Dim rulePath As String = ""
@@ -296,7 +299,7 @@ Public Class MainForm
     End Function
 
     Public Async Function MD5ScanFunc(file As String) As Task
-        Await Task.Run(Async Function()
+        Await Task.Run(Function()
                            Try
                                Dim NSudoDevilModeModuleHandle As IntPtr = LoadLibrary(NSudoPath) ' DLL文件名  
 
@@ -327,29 +330,49 @@ Public Class MainForm
                                Dim fileExtension As String = Path.GetExtension(file)
                                'If fileExtension = ".exe" AndAlso fileExtension IsNot Nothing Then
                                Dim peFile = New PeFile(file)
-
+                               Dim score = 0
                                For Each f In peFile.ImportedFunctions
-                                   Debug.Print(VirusFuncs.Contains(f.Name))
-
                                    If VirusFuncs.Contains(f.Name) Then
-
-                                       Me.Invoke(Sub()
-                                                     If ScanedFile.Contains(file) Then
-                                                         Exit Sub
-                                                     End If
-
-                                                     Me.ListView1.Items.Add(file)
-                                                     Me.VirusCount.Text = "威胁数量:" & Me.ListView1.Items.Count
-                                                     ScanedFile.Add(file)
-                                                 End Sub)
+                                       If f.Name = "VirtualProtect" Then
+                                           score += 100
+                                       ElseIf f.name = "VirtualFree" Then
+                                           score += 85
+                                       ElseIf f.Name = "SetWindowsHookEx" Then
+                                           score += 100
+                                       ElseIf f.Name = "SetWindowsHook" Then
+                                           score += 100
+                                       ElseIf f.Name = "TerminateProcess" Then
+                                           score += 70
+                                       ElseIf f.Name = "FrostCrashedWindow" Then
+                                           score += 100
+                                       Else
+                                           score += 50
+                                       End If
                                    End If
+                                   Debug.Print($"分数:{score}")
+                                   ' End If
                                Next
-                               Debug.Print(file)
+
+                               If score >= 120 Then
+                                   Me.Invoke(Sub()
+                                                 If ScanedFile.Contains(file) Then
+                                                     Exit Sub
+                                                 End If
+
+                                                 Me.ListView1.Items.Add(file)
+                                                 Me.VirusCount.Text = "威胁数量:" & Me.ListView1.Items.Count
+                                                 ScanedFile.Add(file)
+                                             End Sub)
+                               End If
+
+
+
+
                                ' End If
 
                                FreeLibrary(NSudoDevilModeModuleHandle)
                            Catch ex As Exception
-
+                               Debug.Print("")
                            End Try
 
                        End Function)
@@ -386,51 +409,52 @@ Public Class MainForm
 
         'Process.Start(Application.StartupPath & "\VBASTray.exe")
 
-        Panel1.Margin = New Padding(0, 0, 0, 0)
+        'Panel1.Margin = New Padding(0, 0, 0, 0)
 
         ListView1.GetType().GetProperty("DoubleBuffered", BindingFlags.Instance Or BindingFlags.NonPublic).SetValue(ListView1, True, Nothing)
+        ProcCheck.Show()
+        Await Task.Run(action:=Async Sub()
+                                   Try
 
-        Await Task.Run(Async Sub()
-                           Try
+                                       Dim md5sDir = Directory.GetFiles(Application.StartupPath + "\md5s\")
+                                       For Each md5sFile In md5sDir
+                                           Using sr As New StreamReader(md5sFile)
+                                               While Not sr.EndOfStream
 
-                               Dim md5sDir = Directory.GetFiles(Application.StartupPath + "\md5s\")
-                               For Each md5sFile In md5sDir
-                                   Using sr As New StreamReader(md5sFile)
-                                       While Not sr.EndOfStream
-                                           Dim RL = Await sr.ReadLineAsync
-                                           If RL IsNot Nothing Then
-                                               md5s.Add(RL)
-                                           End If
-                                       End While
-                                   End Using
-                               Next
+                                                   Dim RL = Await sr.ReadLineAsync
+                                                   If RL Is Nothing Then Continue While
+                                                   md5s.Add(RL)
 
-                               '读配置文件
-                               Using config As New StreamReader(Application.StartupPath + "\config.ini", Encoding.UTF8)
-                                   While Not config.EndOfStream
-                                       Dim Line = Await config.ReadLineAsync
-                                       If Line IsNot Nothing Then
-                                           configs.Add(Line)
-                                       End If
-                                   End While
-                               End Using
+                                               End While
+                                           End Using
+                                       Next
 
-                               Using funcsFile As New StreamReader(Application.StartupPath + "\PEFuncs_V", Encoding.UTF8)
-                                   Dim tmp = funcsFile.ReadToEnd
-                                   VirusFuncs = tmp.Split(",").ToList
+                                       '读配置文件
+                                       Using config As New StreamReader(Application.StartupPath + "\config.ini", Encoding.UTF8)
+                                           While Not config.EndOfStream
+                                               Dim Line = Await config.ReadLineAsync
+                                               If Line IsNot Nothing Then
+                                                   configs.Add(Line)
+                                               End If
+                                           End While
+                                       End Using
 
-                               End Using
+                                       Using funcsFile As New StreamReader(Application.StartupPath + "\PEFuncs_V", Encoding.UTF8)
+                                           Dim tmp = funcsFile.ReadToEnd
+                                           VirusFuncs = tmp.Split(",").ToList
 
-                           Catch ex As Exception
+                                       End Using
 
-                           End Try
-                       End Sub)
+                                   Catch ex As Exception
+
+                                   End Try
+                               End Sub)
         NoInternetScanMode = configs(1)
 
         If NoInternetScanMode = "MD5" Then
             MD5Scan.Checked = True
-        ElseIf NoInternetScanMode = "Yara" Then
-            YaraScan.Checked = True
+            '  ElseIf NoInternetScanMode = "Yara" Then
+            '        YaraScan.Checked = True
         Else
             PEScan.Checked = True
         End If
@@ -545,14 +569,14 @@ Public Class MainForm
         GoToPage(5)
     End Sub
 
-    Private Sub YaraScan_CheckedChanged(sender As Object, e As EventArgs) Handles YaraScan.CheckedChanged
-        If YaraScan.Checked Then
-            NoInternetScanMode = "Yara"
-            If configs(1) <> "Yara" Then
-                configs(1) = "Yara"
-                IO.File.WriteAllLines(Application.StartupPath + "\config.ini", configs)
-            End If
-        End If
+    Private Sub YaraScan_CheckedChanged(sender As Object, e As EventArgs)
+        '  If YaraScan.Checked Then
+        'NoInternetScanMode = "Yara"
+        'If configs(1) <> "Yara" Then
+        'configs(1) = "Yara"
+        'IO.File.WriteAllLines(Application.StartupPath + "\config.ini", configs)
+        ' End If
+        '    End If
     End Sub
 
 
@@ -567,9 +591,6 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub Panel_Move_Paint(sender As Object, e As PaintEventArgs) Handles Panel_Move.Paint
-
-    End Sub
 
     Private Sub UpdBtn_Click(sender As Object, e As EventArgs)
         Process.Start(Application.StartupPath + "VBASUpdate.exe")
@@ -581,6 +602,45 @@ Public Class MainForm
         If result <> "" Then EndProcessByName(result) Else MsgBox("输入为空",, "VBAS")
 
     End Sub
+
+    Private Sub PEScan_Click(sender As Object, e As EventArgs) Handles PEScan.Click
+        wasd += 1
+        If wasd > 10 Then
+            MsgBox("你是真闲的慌啊-_-",, "VBAS")
+            wasd = 0
+        End If
+    End Sub
+
+    Private Sub Settings_Click(sender As Object, e As EventArgs) Handles Settings.Click
+
+    End Sub
+
+    Private Sub FixRegedit_Click(sender As Object, e As EventArgs) Handles FixRegedit.Click
+        Dim registryKey As RegistryKey = Registry.CurrentUser.CreateSubKey("Software\Microsoft\Windows\CurrentVersion\Policies\System")
+
+        If registryKey IsNot Nothing Then
+            registryKey.SetValue("DisableRegistryTools", 0)
+            registryKey.Close()
+
+        End If
+        ' 读取并验证注册表值  
+        Using OK As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Policies\System")
+            If OK IsNot Nothing Then
+                Dim readValue As Object = OK.GetValue("DisableRegistryTools")
+                If readValue IsNot Nothing AndAlso readValue.ToString() = 0 Then
+                    MsgBox("修改成功！",, "VBAS")
+                Else
+                    MsgBox("注册表值修改失败或读取的值不匹配。",, "VBAS")
+                End If
+            Else
+                MsgBox("无法打开注册表键。",, "VBAS")
+            End If
+            OK.Close()
+        End Using
+    End Sub
+
+
+
 End Class
 
 Public Class Scan
@@ -609,7 +669,9 @@ Public Class Scan
             Console.WriteLine("An error occurred while checking the service status: " & ex.Message)
             Return False
         End Try
+#Disable Warning BC42353 ' 函数没有在所有代码路径上返回值
     End Function
+#Enable Warning BC42353 ' 函数没有在所有代码路径上返回值
 
 
     Public Function getMD5(ByVal strSource As String) As String
