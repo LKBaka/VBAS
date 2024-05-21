@@ -1,8 +1,8 @@
 # VBAS —— 一个Visual Basic制作的自制杀软
 ## 附言
 > 首先,这是个自制杀软项目,不要指望着这是什么很高级的杀软.<br>
-> 然后,这是使用了.net 6.0的项目.如果你想要编译项目，请先安装好Visual Studio和.net 6.0<br>
-> 最后,这个杀软误报极高!!!需要一定的电脑能力.接下来就是放代码了<br>
+> 然后,这是使用了.net 6.0的项目.如果你想要编译项目，请先安装好Visual Studio和.net 6.0 sdk<br>
+> 最后,这个杀软误报极高!!!小白别用!!!.接下来就是放代码了<br>
 #### 导入表查杀代码(代码写的有点烂,别介意)
 ```
 Public Async Function PEFuncScanFunc(file As String) As Task
